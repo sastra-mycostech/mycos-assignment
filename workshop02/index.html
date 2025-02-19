@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hi-Lo Game</title>
+    <style>
+        body {
+            font-family: 'Press Start 2P', cursive;
+            text-align: center;
+            background-color: black;
+            color: limegreen;
+            padding: 20px;
+        }
+        .dice-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+        .dice {
+            font-size: 50px;
+            margin: 10px;
+            background: darkgreen;
+            padding: 10px;
+            border: 4px solid limegreen;
+            display: inline-block;
+        }
+        button {
+            font-family: 'Press Start 2P', cursive;
+            background: black;
+            color: limegreen;
+            border: 3px solid limegreen;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkgreen;
+        }
+        input {
+            background: black;
+            color: limegreen;
+            border: 2px solid limegreen;
+            padding: 5px;
+            font-family: 'Press Start 2P', cursive;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>Hi-Lo Dice Game</h1>
+    <p>Balance: $<span id="balance">100</span></p>
+    <div>
+        Bet Amount: <input type="number" id="betAmount" min="1" value="10">
+    </div>
+    <div>
+        <button onclick="placeBet('high')">Bet High (≥12)</button>
+        <button onclick="placeBet('mid')">Bet Mid (=11)</button>
+        <button onclick="placeBet('low')">Bet Low (≤10)</button>
+    </div>
+    <div class="dice-container">
+        <span class="dice" id="dice1">🎲</span>
+        <span class="dice" id="dice2">🎲</span>
+        <span class="dice" id="dice3">🎲</span>
+    </div>
+    <h2 id="result"></h2>
+
+    <script>
+        let balance = 100;
+
+        function rollDice() {
+            return Math.floor(Math.random() * 6) + 1;
+        }
+
+        function updateBalance(amount) {
+            balance += amount;
+            document.getElementById("balance").innerText = balance;
+        }
+
+        function placeBet(choice) {
+            let bet = Number(document.getElementById("betAmount").value);
+            if (bet <= 0 || bet > balance) {
+                alert("Invalid bet amount!");
+                return;
+            }
+            
+            let dice1 = rollDice();
+            let dice2 = rollDice();
+            let dice3 = rollDice();
+            let sum = dice1 + dice2 + dice3;
+            
+            document.getElementById("dice1").innerText = `🎲 ${dice1}`;
+            document.getElementById("dice2").innerText = `🎲 ${dice2}`;
+            document.getElementById("dice3").innerText = `🎲 ${dice3}`;
+            
+            let resultText = `Sum: ${sum}. `;
+            let winnings = 0;
+            
+            if ((choice === 'high' && sum >= 12) || (choice === 'low' && sum <= 10)) {
+                winnings = bet * 2;
+                resultText += "You win!";
+            } else if (choice === 'mid' && sum === 11) {
+                winnings = bet * 5;
+                resultText += "Jackpot! You win big!";
+            } else {
+                winnings = -bet;
+                resultText += "You lose!";
+            }
+            
+            updateBalance(winnings);
+            document.getElementById("result").innerText = resultText;
+        }
+    </script>
+</body>
+</html>
